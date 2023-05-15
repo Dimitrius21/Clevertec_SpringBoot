@@ -2,6 +2,7 @@ package ru.clevertec.ecl.service;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.clevertec.ecl.entity.GiftCertificate;
 import ru.clevertec.ecl.entity.Tag;
@@ -22,7 +23,10 @@ import java.util.Optional;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CertificateService {
+
+    @Autowired
     CertificateRepository certRepo;
+    @Autowired
     TagRepository tagRepo;
 
     /**

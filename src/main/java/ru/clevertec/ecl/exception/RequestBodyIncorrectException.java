@@ -1,5 +1,8 @@
 package ru.clevertec.ecl.exception;
 
+import lombok.Getter;
+
+@Getter
 public class RequestBodyIncorrectException extends RuntimeException{
     private long errorCode;
 

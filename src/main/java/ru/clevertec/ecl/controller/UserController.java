@@ -67,9 +67,8 @@ public class UserController {
     }
 
     @GetMapping("/{id}/orders")
-    public ResponseEntity<User> findUserOrders(@PathVariable long id) {
-        User response = userRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFountException("id = " + id, 40403));
+    public ResponseEntity<List<Order>> findUserOrders(@PathVariable long id) {
+        List<Order> response = orderRepo.findByUserId(id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

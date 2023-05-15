@@ -2,6 +2,7 @@ package ru.clevertec.ecl.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import ru.clevertec.ecl.repository.TagRepository;
 import ru.clevertec.ecl.service.CertificateService;
 import ru.clevertec.ecl.util.SortCreator;
 import ru.clevertec.ecl.entity.GiftCertificate;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,15 +25,19 @@ import java.util.Optional;
  * Класс реализующий слой контроллера для запросов по GiftCertificate
  */
 
-@RequiredArgsConstructor
+@AllArgsConstructor
 @RestController
 @RequestMapping(value = "/cert")
 public class CertificateController {
     private static final String ITEM_ON_PAGE = "5";
     private final static Map<String, String> ACCORDANCE = Map.of("name", "name", "date", "createDate");
     private final static Map<String, String> ACCORDANCE_NATIVE = Map.of("name", "name", "date", "create_date");
+
+    @Autowired
     private CertificateRepository certRepo;
+    @Autowired
     private TagRepository tagRepo;
+    @Autowired
     private CertificateService certService;
 
     @GetMapping("/{id}")
@@ -58,19 +64,23 @@ public class CertificateController {
         Sort sort = SortCreator.getSpringSort(sortParam, ACCORDANCE);
         GiftCertificate cert = new GiftCertificate();
         ExampleMatcher CertExampleMatcher = ExampleMatcher.matchingAny().withIgnoreNullValues();
-        switch (field){
-            case "name" : {cert.setName(text);
+        switch (field) {
+            case "name": {
+                cert.setName(text);
                 CertExampleMatcher = CertExampleMatcher.withMatcher("name", ExampleMatcher.GenericPropertyMatchers.ignoreCase());
-                break;}
-            case "description" : {cert.setDescription(text);
+                break;
+            }
+            case "description": {
+                cert.setDescription(text);
                 CertExampleMatcher = CertExampleMatcher.withMatcher("description", ExampleMatcher.GenericPropertyMatchers.contains().ignoreCase());
-                break;}
+                break;
+            }
             default: {
                 throw new NotValidRequestParametersException(" Field for search is incorrect", 40002);
             }
         }
         Example<GiftCertificate> certExample = Example.of(cert, CertExampleMatcher);
-        List<GiftCertificate> certs = certRepo.findAll(certExample,sort);
+        List<GiftCertificate> certs = certRepo.findAll(certExample, sort);
         return new ResponseEntity(certs, HttpStatus.OK);
     }
 
@@ -93,7 +103,7 @@ public class CertificateController {
     }
 
     @PatchMapping
-    public ResponseEntity updateCertAllFields(@RequestBody Optional<GiftCertificate> certInRequest) {
+    public ResponseEntity updateCertFields(@RequestBody Optional<GiftCertificate> certInRequest) {
         if (certInRequest.isEmpty()) {
             throw new RequestBodyIncorrectException("Data for update is absent", 40002);
         }

@@ -9,7 +9,6 @@ import ru.clevertec.ecl.entity.GiftCertificate;
 import java.util.List;
 
 @Repository
-@Transactional
 public interface CertificateRepository extends JpaRepository<GiftCertificate, Long> {
     final String requestFindByTagName = "select distinct cert.* from gift_certificate cert " +
             "where cert.id IN (select certificate_id from tag t " +

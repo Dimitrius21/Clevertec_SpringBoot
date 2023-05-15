@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS users(
  email VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE orders(
+CREATE TABLE IF NOT EXISTS orders(
 id bigserial PRIMARY KEY,
 create_time timestamp,
 amount bigint,
@@ -35,7 +35,7 @@ user_id bigint,
 FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
-CREATE TABLE items(
+CREATE TABLE IF NOT EXISTS items(
 id bigserial PRIMARY KEY,
 quantity int,
 order_id bigint,
@@ -44,7 +44,7 @@ FOREIGN KEY (order_id) REFERENCES orders(id),
 FOREIGN KEY (cert_id) REFERENCES gift_certificate(id)
 );
 
-INSERT INTO tag (name) VALUES ('relax'), ('sport'), ('quiz'), ('motor');
+INSERT INTO tag (name) VALUES ('relax'), ('sport'), ('quiz'), ('motor'), ('test');
 
 INSERT INTO gift_certificate (name, description, price, duration, create_date, last_update_date)
 VALUES ('Rest1', 'sauna', 1900, 10, '2023-04-17', '2023-04-17'),
@@ -53,7 +53,9 @@ VALUES ('Rest1', 'sauna', 1900, 10, '2023-04-17', '2023-04-17'),
 ('Auto','Carting', 3000, 15, '2023-04-18', '2023-04-18'),
 ('Quest Zone1', 'WILD WEST: GOLD RUSH', 8000, 14, '2023-04-19', '2023-04-19'),
 ('Quest Zone2', 'THE MAGEs TOWER', 8500, 14, '2023-04-19', '2023-04-19'),
-('Quad bike', 'Road 10km, 1 person', 7000, 30, '2023-04-20', '2023-04-20');
+('Quad bike', 'Road 10km, 1 person', 7000, 30, '2023-04-20', '2023-04-20'),
+('Test', 'Test certificate', 1, 1000, '2023-05-01', '2023-05-01');
+
 
 
 INSERT INTO certificate_tag (tag_id, certificate_id) VALUES (1, 1), (1, 2), (1, 3),

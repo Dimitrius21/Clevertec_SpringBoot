@@ -1,6 +1,7 @@
 package ru.clevertec.ecl.controller;
 
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,6 +27,7 @@ import java.util.Optional;
 public class TagController {
     private static final String ITEM_ON_PAGE = "10";
     private final static Map<String, String> ACCORDANCE = Map.of("name", "name");
+    @Autowired
     private TagRepository tagRepo;
 
     @GetMapping("/{id}")
@@ -34,22 +36,19 @@ public class TagController {
                 HttpStatus.OK);
     }
 
+
     @GetMapping
-    public ResponseEntity getAll(@RequestParam Optional<Integer> page,
-                                 @RequestParam(defaultValue = ITEM_ON_PAGE) int size,
-                                 @RequestParam(name = "sort") Optional<List<String>> sortParams) {
-        Sort sort = SortCreator.getSpringSort(sortParams, ACCORDANCE);
-        Pageable pageable = page.isPresent() ? PageRequest.of(page.get(), size, sort) : PageRequest.ofSize(Integer.MAX_VALUE).withSort(sort);
-        return new ResponseEntity(tagRepo.findAll(pageable).getContent(), HttpStatus.OK);
+    public ResponseEntity<List<Tag>> getAll(Pageable pageable){
+        return new ResponseEntity<>(tagRepo.findAll(pageable).getContent(), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity createTag(@RequestBody Tag tag) {
+    public ResponseEntity<Tag> createTag(@RequestBody Tag tag) {
         return new ResponseEntity<>(tagRepo.save(tag), HttpStatus.CREATED);
     }
 
     @PutMapping
-    public ResponseEntity updateTag(@RequestBody Tag tag) {
+    public ResponseEntity<Tag> updateTag(@RequestBody Tag tag) {
         return new ResponseEntity<>(tagRepo.save(tag), HttpStatus.OK);
     }
 
@@ -60,7 +59,7 @@ public class TagController {
     }
 
     @GetMapping("/popular/user/{id}")
-    public ResponseEntity getMostUsedTagInOrder(@PathVariable long id) {
+    public ResponseEntity<Tag> getMostUsedTagInOrder(@PathVariable long id) {
         return new ResponseEntity<>(tagRepo.findMostUsedTagMostExpensiveOrder(id)
                 .orElseThrow(() -> new ResourceNotFountException("for id = " + id, 40401)), HttpStatus.OK);
     }

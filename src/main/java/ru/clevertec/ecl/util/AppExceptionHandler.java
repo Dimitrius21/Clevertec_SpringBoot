@@ -27,8 +27,14 @@ public class AppExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({NotValidRequestParametersException.class, RequestBodyIncorrectException.class})
+    @ExceptionHandler({NotValidRequestParametersException.class})
     protected ResponseEntity<Object> handleNotValidRequestData(NotValidRequestParametersException ex, WebRequest request) {
+        ErrorIfo error = new ErrorIfo(ex.getMessage(), ex.getErrorCode());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({RequestBodyIncorrectException.class})
+    protected ResponseEntity<Object> handleNotValidRequestData(RequestBodyIncorrectException ex, WebRequest request) {
         ErrorIfo error = new ErrorIfo(ex.getMessage(), ex.getErrorCode());
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
