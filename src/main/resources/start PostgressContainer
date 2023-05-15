@@ -1,0 +1,1 @@
+ docker run --name docPostgres -e POSTGRES_PASSWORD=1234 -e POSTGRES_DB=study -d -p 5431:5432 postgres:15.2-alpine

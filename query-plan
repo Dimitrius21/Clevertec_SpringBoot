@@ -1,0 +1,33 @@
+QUERY PLAN
+Seq Scan on tag  (cost=77.33..89.08 rows=1 width=524)
+  Filter: ((name)::text = ($4)::text)
+  InitPlan 2 (returns $4)
+    ->  Limit  (cost=77.32..77.33 rows=1 width=524)
+          InitPlan 1 (returns $0)
+            ->  Aggregate  (cost=27.02..27.03 rows=1 width=8)
+                  ->  Seq Scan on orders  (cost=0.00..27.00 rows=7 width=8)
+                        Filter: (user_id = 1)
+          ->  Sort  (cost=50.30..50.30 rows=2 width=524)
+                Sort Key: (count(t.name)) DESC
+                ->  GroupAggregate  (cost=50.25..50.29 rows=2 width=524)
+                      Group Key: t.name
+                      ->  Sort  (cost=50.25..50.26 rows=2 width=516)
+                            Sort Key: t.name
+                            ->  Nested Loop  (cost=18.48..50.24 rows=2 width=516)
+                                  ->  Nested Loop  (cost=18.33..50.05 rows=1 width=532)
+                                        ->  Hash Join  (cost=18.19..49.86 rows=1 width=24)
+                                              Hash Cond: (ct.certificate_id = i.cert_id)
+                                              ->  Seq Scan on certificate_tag ct  (cost=0.00..25.70 rows=1570 width=16)
+                                              ->  Hash  (cost=18.18..18.18 rows=1 width=8)
+                                                    ->  Nested Loop  (cost=0.16..18.18 rows=1 width=8)
+                                                          ->  Seq Scan on items i  (cost=0.00..1.16 rows=16 width=16)
+                                                          ->  Memoize  (cost=0.16..2.93 rows=1 width=8)
+                                                                Cache Key: i.order_id
+                                                                Cache Mode: logical
+                                                                ->  Index Scan using orders_pkey on orders o  (cost=0.15..2.92 rows=1 width=8)
+                                                                      Index Cond: (id = i.order_id)
+                                                                      Filter: (amount = $0)
+                                        ->  Index Scan using tag_pkey on tag t  (cost=0.14..0.19 rows=1 width=524)
+                                              Index Cond: (id = ct.tag_id)
+                                  ->  Index Only Scan using gift_certificate_pkey on gift_certificate c  (cost=0.14..0.19 rows=1 width=8)
+                                        Index Cond: (id = ct.certificate_id)

@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/study
+    username : postgres
+    password : 1234
+    driver : org.postgresql.Driver
+#    schema : _schema.sql
+#    data : _data.sql
+
+  jpa:
+    show-sql : true
+  sql:
+    init:
+      mode : never
+app.answer : No answer
